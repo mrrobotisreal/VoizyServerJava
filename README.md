@@ -46,12 +46,15 @@
 
 [Profile Demo link](https://vigorous-helicona-f1e.notion.site/Voizy-Official-Documentation-1b526f695b8e80129187e9c97396e2b9)
 
-<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy1.jpg" alt="Home Screen" style="max-height: 600px;" />
-<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy4.jpg" alt="Comment on Post" style="max-height: 600px;" />
-<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy31.jpg" alt="Create Post Dialog" style="max-height: 600px;" />
-<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy11.jpg" alt="Photos" style="max-height: 600px;" />
-<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy22.jpg" alt="About - Profile Info" style="max-height: 600px;" />
-<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy23.jpg" alt="Friends" style="max-height: 600px;" />
+![Home Screen](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/readme/voizy1.jpg)
+![React to Post](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/readme/voizy5.jpg)
+![Comment on Post](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/readme/voizy4.jpg)
+![Create Post Dialog](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/readme/voizy27.jpg)
+![Create Post Dialog](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/readme/voizy31.jpg)
+![Photos](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/readme/voizy11.jpg)
+![Add Images](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/readme/voizy9.jpg)
+![About - Profile Info](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/readme/voizy22.jpg)
+![Friends](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/readme/voizy23.jpg)
 
 🚧 More coming soon... 🛠️
 
