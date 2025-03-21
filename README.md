@@ -46,6 +46,13 @@
 
 [Profile Demo link](https://vigorous-helicona-f1e.notion.site/Voizy-Official-Documentation-1b526f695b8e80129187e9c97396e2b9)
 
+<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy1.jpg" alt="Home Screen" style="max-height: 600px;" />
+<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy4.jpg" alt="Comment on Post" style="max-height: 600px;" />
+<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy31.jpg" alt="Create Post Dialog" style="max-height: 600px;" />
+<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy11.jpg" alt="Photos" style="max-height: 600px;" />
+<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy22.jpg" alt="About - Profile Info" style="max-height: 600px;" />
+<img src="https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/main_profile/voizy23.jpg" alt="Friends" style="max-height: 600px;" />
+
 🚧 More coming soon... 🛠️
 
 _Thanks for your patience!_
