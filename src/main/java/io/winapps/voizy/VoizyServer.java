@@ -1,17 +1,8 @@
 package io.winapps.voizy;
 
+import io.winapps.voizy.controllers.AuthController;
+import io.winapps.voizy.controllers.UserController;
 import io.winapps.voizy.database.DatabaseManager;
-import io.winapps.voizy.handlers.auth.AuthHandler;
-import io.winapps.voizy.handlers.auth.servlets.LoginServlet;
-import io.winapps.voizy.handlers.users.UserHandler;
-import io.winapps.voizy.handlers.users.servlets.CreateUserServlet;
-import io.winapps.voizy.middleware.AuthMiddleware;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
@@ -23,8 +14,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class VoizyServer {
     private static final Logger logger = LoggerFactory.getLogger(VoizyServer.class);
@@ -43,11 +32,11 @@ public class VoizyServer {
             context.setContextPath("/");
             server.setHandler(context);
 
-            AuthHandler authHandler = new AuthHandler();
-            UserHandler userHandler = new UserHandler();
-            AuthMiddleware authMiddleware = new AuthMiddleware();
+            UserController userController = new UserController();
+            AuthController authController = new AuthController();
 
-            registerServlets(context, authHandler, userHandler, authMiddleware);
+            context.addServlet(new ServletHolder(userController.createUserServlet()), "/users/create");
+            context.addServlet(new ServletHolder(authController.loginServlet()), "/users/login");
 
             server.start();
             logger.info("Server started on port {}", port);
@@ -111,27 +100,5 @@ public class VoizyServer {
         }
 
         return server;
-    }
-
-    private static void registerServlets(ServletContextHandler context,
-                                         AuthHandler authHandler,
-                                         UserHandler userHandler,
-                                         AuthMiddleware authMiddleware) {
-        context.addServlet(new ServletHolder(createServlet(userHandler::createUser)), "/users/create");
-        context.addServlet(new ServletHolder(createServlet(authHandler::login)), "/users/login");
-    }
-
-    private static HttpServlet createServlet(BiConsumerServlet handler) {
-        return new HttpServlet() {
-            @Override
-            public void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-                handler.accept(req, resp);
-            }
-        };
-    }
-
-    @FunctionalInterface
-    interface BiConsumerServlet {
-        void accept(HttpServletRequest req, HttpServletResponse resp) throws IOException;
     }
 }

@@ -5,10 +5,7 @@ import io.winapps.voizy.database.DatabaseManager;
 import io.winapps.voizy.models.middleware.APIKey;
 import io.winapps.voizy.models.users.CreateUserRequest;
 import io.winapps.voizy.models.users.CreateUserResponse;
-import io.winapps.voizy.util.AnalyticsUtil;
-import io.winapps.voizy.util.ApiKeyUtil;
-import io.winapps.voizy.util.HashingUtil;
-import io.winapps.voizy.util.JwtUtil;
+import io.winapps.voizy.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +19,7 @@ import java.util.Map;
 
 public class UserHandler {
     private static final Logger logger = LoggerFactory.getLogger(UserHandler.class);
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = JsonUtil.getObjectMapper();
 
     /**
      * Placeholder implementations of handler methods
