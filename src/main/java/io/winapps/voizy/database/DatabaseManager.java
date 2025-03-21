@@ -19,7 +19,12 @@ public class DatabaseManager {
         try {
             String username = System.getenv("DBU");
             String password = System.getenv("DBP");
-            String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/voizy?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
+            String dbName = "voizy";
+            if (Boolean.parseBoolean(System.getProperty("TEST_MODE", "false"))) {
+                dbName = "voizy_test";
+            }
+
+            String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/" + dbName + "?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
 
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(jdbcUrl);

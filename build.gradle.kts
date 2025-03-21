@@ -23,7 +23,7 @@ dependencies {
     implementation("javax.servlet:javax.servlet-api:4.0.1")
 
     // Database
-    implementation("mysql:mysql-connector-java:8.0.28")
+    implementation("mysql:mysql-connector-java:8.0.33")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
     // Redis
@@ -49,6 +49,12 @@ dependencies {
     // Testing
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+    testImplementation("org.mockito:mockito-core:5.3.1")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
+    testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation("org.apache.httpcomponents.client5:httpclient5:5.2.1")
 }
 
 application {
