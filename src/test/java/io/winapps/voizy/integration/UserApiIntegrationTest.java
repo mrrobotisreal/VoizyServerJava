@@ -25,6 +25,10 @@ public class UserApiIntegrationTest {
     private static final String BASE_URL = "http://localhost:8282";
     private static final ObjectMapper objectMapper = JsonUtil.getObjectMapper();
 
+    static {
+        System.setProperty("TEST_MODE", "true");
+    }
+
     @BeforeAll
     public void setup() throws Exception {
         TestDatabaseUtil.setupTestDatabase();
