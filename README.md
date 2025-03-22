@@ -74,6 +74,10 @@ Instructions for the usage of this app will be added soon... Thanks for your pat
 
 ## Testing
 
+There are currently `33` tests implemented as seen in the screenshot below. Follow the instructions underneath to run all tests.
+
+![TestRun](https://winapps-solutions-llc.s3.us-west-2.amazonaws.com/portfolio/voizy/demos/java_server_test_runs/2025_03_21/java_test_2025_03_22_run1_scaleddown.jpg)
+
 To run the entire suite of tests for the Voizy server you simply need to set a few environment variables and then run it as you normally would via `./gradlew test`. Below are the environment variables that need to be set in order to run all the tests for the entire package (_NOTE: You'll need to make sure that you have a test database already created that is named "voizy_test"_):
 
 ```bash
