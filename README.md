@@ -17,6 +17,7 @@
 - [Demo](#demo)
 - [Getting started](#getting-started)
 - [Usage](#usage)
+- [Testing](#testing)
 - [Documentation](#documentation)
 - [Technologies](#technologies)
 - [License](#license)
@@ -70,6 +71,18 @@ Instructions for getting started will be added soon... Thanks for your patience!
 ## Usage
 
 Instructions for the usage of this app will be added soon... Thanks for your patience!
+
+## Testing
+
+To run the entire suite of tests for the Voizy server you simply need to set a few environment variables and then run it as you normally would via `./gradlew test`. Below are the environment variables that need to be set in order to run all the tests for the entire package (_NOTE: You'll need to make sure that you have a test database already created that is named "voizy_test"_):
+
+```bash
+export DBU='root'
+export DBP='<your-password>'
+export TEST_MODE='true'
+
+./gradlew test
+```
 
 ## Documentation
 
