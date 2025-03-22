@@ -1,8 +1,14 @@
 package io.winapps.voizy;
 
 import io.winapps.voizy.controllers.AuthController;
+import io.winapps.voizy.controllers.PostController;
 import io.winapps.voizy.controllers.UserController;
 import io.winapps.voizy.database.DatabaseManager;
+import io.winapps.voizy.middleware.AuthMiddleware;
+import io.winapps.voizy.util.ServletAdapter;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
@@ -14,6 +20,8 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class VoizyServer {
     private static final Logger logger = LoggerFactory.getLogger(VoizyServer.class);
@@ -34,9 +42,32 @@ public class VoizyServer {
 
             UserController userController = new UserController();
             AuthController authController = new AuthController();
+            PostController postController = new PostController();
+            AuthMiddleware authMiddleware = new AuthMiddleware();
 
-            context.addServlet(new ServletHolder(userController.createUserServlet()), "/users/create");
-            context.addServlet(new ServletHolder(authController.loginServlet()), "/users/login");
+            //-------------------------//
+            //       User routes       //
+            //-------------------------//
+            // CreateUser
+            HttpServlet protectedCreateUserServlet = ServletAdapter.biConsumerToServlet(
+                    userController.createUserHandler()
+            );
+            context.addServlet(new ServletHolder(protectedCreateUserServlet), "/users/create");
+
+            // Login
+            HttpServlet protectedLoginServlet = ServletAdapter.biConsumerToServlet(
+                    authController.loginHandler()
+            );
+            context.addServlet(new ServletHolder(protectedLoginServlet), "/users/login");
+
+            //-------------------------//
+            //       Post routes       //
+            //-------------------------//
+            // ListPosts
+            HttpServlet protectedListPostsServlet = ServletAdapter.biConsumerToServlet(
+                    authMiddleware.validateApiKey(postController.listPostsHandler())
+            );
+            context.addServlet(new ServletHolder(protectedListPostsServlet), "/posts/list");
 
             server.start();
             logger.info("Server started on port {}", port);
@@ -100,5 +131,19 @@ public class VoizyServer {
         }
 
         return server;
+    }
+
+    static HttpServlet createServlet(BiConsumerServlet handler) {
+        return new HttpServlet() {
+            @Override
+            protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+                handler.accept(req, resp);
+            }
+        };
+    }
+
+    @FunctionalInterface
+    interface BiConsumerServlet {
+        void accept(HttpServletRequest req, HttpServletResponse resp) throws IOException;
     }
 }

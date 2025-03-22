@@ -9,19 +9,17 @@ import io.winapps.voizy.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.function.BiConsumer;
 
 public class AuthMiddleware {
@@ -31,9 +29,6 @@ public class AuthMiddleware {
     public static final String USER_ID_CONTEXT_KEY = "userID";
     public static final String API_KEY_CONTEXT_KEY = "apiKey";
 
-    /**
-     * Middleware to validate JWT tokens
-     */
     public BiConsumer<HttpServletRequest, HttpServletResponse> validateJwt(BiConsumer<HttpServletRequest, HttpServletResponse> next) {
         return (req, res) -> {
             try {
@@ -81,9 +76,6 @@ public class AuthMiddleware {
         };
     }
 
-    /**
-     * Middleware to validate API keys
-     */
     public BiConsumer<HttpServletRequest, HttpServletResponse> validateApiKey(BiConsumer<HttpServletRequest, HttpServletResponse> next) {
         return (req, res) -> {
             try {
@@ -140,16 +132,10 @@ public class AuthMiddleware {
         };
     }
 
-    /**
-     * Combined JWT and API key middleware
-     */
     public BiConsumer<HttpServletRequest, HttpServletResponse> combinedAuth(BiConsumer<HttpServletRequest, HttpServletResponse> next) {
         return validateJwt(validateApiKey(next));
     }
 
-    /**
-     * Send an error response
-     */
     private void sendError(HttpServletResponse res, String message, int statusCode) throws IOException {
         ErrorResponse errorResponse = new ErrorResponse(
                 Integer.toString(statusCode),
@@ -161,9 +147,6 @@ public class AuthMiddleware {
         objectMapper.writeValue(res.getOutputStream(), errorResponse);
     }
 
-    /**
-     * Fetch API key from database
-     */
     private APIKey fetchApiKey(long userID, String apiKeyStr) {
         try (Connection conn = DatabaseManager.getConnection()) {
             String query = "SELECT user_id, api_key, created_at, expires_at, last_used_at, updated_at " +
@@ -196,9 +179,6 @@ public class AuthMiddleware {
         return null;
     }
 
-    /**
-     * Validate API key against users table
-     */
     private boolean validateUserAPIKey(Connection conn, long userID, String apiKeyStr) throws SQLException {
         String query = "SELECT user_id, api_key FROM users WHERE user_id = ? AND api_key = ?";
 
@@ -212,9 +192,6 @@ public class AuthMiddleware {
         }
     }
 
-    /**
-     * Update API key last used timestamp
-     */
     private void updateApiKeyLastUsedAt(long userID, String apiKeyStr) {
         try (Connection conn = DatabaseManager.getConnection()) {
             String query = "UPDATE api_keys SET last_used_at = NOW() WHERE user_id = ? AND api_key = ?";

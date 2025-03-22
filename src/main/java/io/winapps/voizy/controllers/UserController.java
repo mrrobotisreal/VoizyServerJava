@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.function.BiConsumer;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -46,12 +47,37 @@ public class UserController {
         }
     }
 
-    public HttpServlet createUserServlet() {
-        return new HttpServlet() {
-            @Override
-            protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-                create(req, resp);
+    public BiConsumer<HttpServletRequest, HttpServletResponse> createUserHandler() {
+        return (req, res) -> {
+            try {
+                create(req, res);
+            } catch (IOException e) {
+                logger.error("IO error in create user handler", e);
+                throw new RuntimeException("Error handling create user request", e);
             }
         };
     }
+
+    public HttpServlet createUserServlet() {
+        return new HttpServlet() {
+            @Override
+            protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+                try {
+                    create(req, resp);
+                } catch (IOException e) {
+                    logger.error("IO error in create user servlet", e);
+                    throw new RuntimeException("Error handling create user request", e);
+                }
+            }
+        };
+    }
+
+//    public HttpServlet createUserServlet() {
+//        return new HttpServlet() {
+//            @Override
+//            protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+//                create(req, resp);
+//            }
+//        };
+//    }
 }

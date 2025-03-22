@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.winapps.voizy.models.auth.LoginRequest;
 import io.winapps.voizy.models.auth.LoginResponse;
 import io.winapps.voizy.services.AuthService;
-import io.winapps.voizy.services.UserService;
 import io.winapps.voizy.util.JsonUtil;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,20 +12,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.function.BiConsumer;
 
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private static final ObjectMapper objectMapper = JsonUtil.getObjectMapper();
-    private final UserService userService;
     private final AuthService authService;
 
     public AuthController() {
-        this.userService = new UserService();
         this.authService = new AuthService();
     }
 
-    public AuthController(UserService userService, AuthService authService) {
-        this.userService = userService;
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
@@ -63,12 +60,37 @@ public class AuthController {
         }
     }
 
-    public HttpServlet loginServlet() {
-        return new HttpServlet() {
-            @Override
-            protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-                login(req, resp);
+    public BiConsumer<HttpServletRequest, HttpServletResponse> loginHandler() {
+        return (req, res) -> {
+            try {
+                login(req, res);
+            } catch (IOException e) {
+                logger.error("IO error in login handler", e);
+                throw new RuntimeException("Error handling login request", e);
             }
         };
     }
+
+    public HttpServlet loginServlet() {
+        return new HttpServlet() {
+            @Override
+            protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+                try {
+                    login(req, resp);
+                } catch (IOException e) {
+                    logger.error("IO error in login servlet", e);
+                    throw new RuntimeException("Error handling login request", e);
+                }
+            }
+        };
+    }
+
+//    public HttpServlet loginServlet() {
+//        return new HttpServlet() {
+//            @Override
+//            protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+//                login(req, resp);
+//            }
+//        };
+//    }
 }

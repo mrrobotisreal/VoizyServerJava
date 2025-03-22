@@ -1,7 +1,5 @@
 package io.winapps.voizy.services;
 
-import io.winapps.voizy.models.auth.LoginRequest;
-import io.winapps.voizy.models.auth.LoginResponse;
 import io.winapps.voizy.models.auth.User;
 import io.winapps.voizy.models.middleware.APIKey;
 import io.winapps.voizy.models.users.CreateUserRequest;
@@ -16,7 +14,6 @@ import io.winapps.voizy.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
