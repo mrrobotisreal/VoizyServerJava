@@ -68,11 +68,18 @@ public class VoizyServer {
                     authMiddleware.validateApiKey(postController.listPostsHandler())
             );
             context.addServlet(new ServletHolder(protectedListPostsServlet), "/posts/list");
+
             // CreatePost
             HttpServlet protectedCreatePostServlet = ServletAdapter.biConsumerToServlet(
                     authMiddleware.combinedAuth(postController.createPostHandler())
             );
             context.addServlet(new ServletHolder(protectedCreatePostServlet), "/posts/create");
+
+            // GetPostMedia
+            HttpServlet protectedGetPostMediaServlet = ServletAdapter.biConsumerToServlet(
+                    authMiddleware.validateApiKey(postController.getPostMediaHandler())
+            );
+            context.addServlet(new ServletHolder(protectedGetPostMediaServlet), "/posts/get/media");
 
             server.start();
             logger.info("Server started on port {}", port);

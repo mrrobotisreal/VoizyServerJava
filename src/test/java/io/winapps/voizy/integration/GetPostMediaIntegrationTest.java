@@ -2,7 +2,7 @@ package io.winapps.voizy.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.winapps.voizy.database.DatabaseManager;
-import io.winapps.voizy.models.posts.ListPostsResponse;
+import io.winapps.voizy.models.posts.GetPostMediaResponse;
 import io.winapps.voizy.models.users.CreateUserRequest;
 import io.winapps.voizy.models.users.CreateUserResponse;
 import io.winapps.voizy.util.JsonUtil;
@@ -15,24 +15,25 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ListPostsIntegrationTest {
-    private static final Logger logger = LoggerFactory.getLogger(ListPostsIntegrationTest.class);
+public class GetPostMediaIntegrationTest {
+    private static final Logger logger = LoggerFactory.getLogger(GetPostMediaIntegrationTest.class);
     private static final String BASE_URL = "http://localhost:8282";
     private static final ObjectMapper objectMapper = JsonUtil.getObjectMapper();
+    private long postId = 0;
 
     @BeforeAll
     public void setup() throws Exception {
@@ -50,12 +51,12 @@ public class ListPostsIntegrationTest {
     }
 
     @Test
-    public void testListPosts() throws Exception {
+    public void testGetPostMedia() throws Exception {
         String testId = UUID.randomUUID().toString().substring(0, 8);
         String testEmail = "posts_test_" + testId + "@example.com";
         String testUsername = "test_posts_" + testId;
 
-        logger.info("Running testListPosts with ID: {}", testId);
+        logger.info("Running testGetPostMedia with ID: {}", testId);
 
         CreateUserResponse userResponse = createTestUser(testEmail, testUsername, "Posts Test " + testId);
         long userId = userResponse.getUserID();
@@ -63,7 +64,7 @@ public class ListPostsIntegrationTest {
 
         insertTestPosts(userId, testId);
 
-        String url = BASE_URL + "/posts/list?id=" + userId + "&limit=10&page=1";
+        String url = BASE_URL + "/posts/get/media?id=" + postId;
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(url);
@@ -77,30 +78,25 @@ public class ListPostsIntegrationTest {
                 String responseBody = EntityUtils.toString(response.getEntity());
                 logger.debug("Response body: {}", responseBody);
 
-                ListPostsResponse listResponse = objectMapper.readValue(responseBody, ListPostsResponse.class);
+                GetPostMediaResponse getResponse = objectMapper.readValue(responseBody, GetPostMediaResponse.class);
 
-                assertNotNull(listResponse);
-                assertNotNull(listResponse.getPosts());
+                assertNotNull(getResponse);
+                assertNotNull(getResponse.getImages());
+                assertNotNull(getResponse.getVideos());
 
-                assertEquals(5, listResponse.getPosts().size());
-                assertEquals(5, listResponse.getTotalPosts());
-                assertEquals(1, listResponse.getTotalPages());
-                assertEquals(10, listResponse.getLimit());
-                assertEquals(1, listResponse.getPage());
-
-                assertTrue(listResponse.getPosts().get(0).getContentText().startsWith("Test post"));
-                assertEquals(userId, listResponse.getPosts().get(0).getUserId());
+                assertTrue(getResponse.getImages().get(0).startsWith("Test media url"));
+                assertTrue(getResponse.getVideos().get(0).startsWith("Test media url"));
             }
         }
     }
 
     @Test
-    public void testListPostsPagination() throws Exception {
+    public void testGetPostMediaInvalidParameters() throws Exception {
         String testId = UUID.randomUUID().toString().substring(0, 8);
         String testEmail = "posts_test_" + testId + "@example.com";
         String testUsername = "test_posts_" + testId;
 
-        logger.info("Running testListPostsPagination with ID: {}", testId);
+        logger.info("Running testGetPostMediaInvalidParameters with ID: {}", testId);
 
         CreateUserResponse userResponse = createTestUser(testEmail, testUsername, "Posts Test " + testId);
         long userId = userResponse.getUserID();
@@ -108,80 +104,7 @@ public class ListPostsIntegrationTest {
 
         insertTestPosts(userId, testId);
 
-        String url = BASE_URL + "/posts/list?id=" + userId + "&limit=2&page=1";
-
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(url);
-
-            httpGet.setHeader("X-API-Key", apiKey);
-            httpGet.setHeader("X-User-ID", String.valueOf(userId));
-
-            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                assertEquals(200, response.getCode());
-
-                String responseBody = EntityUtils.toString(response.getEntity());
-                ListPostsResponse listResponse = objectMapper.readValue(responseBody, ListPostsResponse.class);
-
-                assertEquals(2, listResponse.getPosts().size());
-                assertEquals(5, listResponse.getTotalPosts());
-                assertEquals(3, listResponse.getTotalPages());  // Ceil(5/2) = 3
-                assertEquals(2, listResponse.getLimit());
-                assertEquals(1, listResponse.getPage());
-
-                assertTrue(listResponse.getPosts().get(0).getContentText().contains("Test post 1"));
-                assertTrue(listResponse.getPosts().get(1).getContentText().contains("Test post 2"));
-            }
-        }
-
-        url = BASE_URL + "/posts/list?id=" + userId + "&limit=2&page=2";
-
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(url);
-
-            httpGet.setHeader("X-API-Key", apiKey);
-            httpGet.setHeader("X-User-ID", String.valueOf(userId));
-
-            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                assertEquals(200, response.getCode());
-
-                String responseBody = EntityUtils.toString(response.getEntity());
-                ListPostsResponse listResponse = objectMapper.readValue(responseBody, ListPostsResponse.class);
-
-                assertEquals(2, listResponse.getPosts().size());
-                assertTrue(listResponse.getPosts().get(0).getContentText().contains("Test post 3"));
-                assertTrue(listResponse.getPosts().get(1).getContentText().contains("Test post 4"));
-            }
-        }
-    }
-
-    @Test
-    public void testListPostsInvalidParameters() throws Exception {
-        String testId = UUID.randomUUID().toString().substring(0, 8);
-        String testEmail = "posts_test_" + testId + "@example.com";
-        String testUsername = "test_posts_" + testId;
-
-        logger.info("Running testListPostsInvalidParameters with ID: {}", testId);
-
-        CreateUserResponse userResponse = createTestUser(testEmail, testUsername, "Posts Test " + testId);
-        long userId = userResponse.getUserID();
-        String apiKey = userResponse.getApiKey();
-
-        insertTestPosts(userId, testId);
-
-        String url = BASE_URL + "/posts/list?id=invalid&limit=10&page=1";
-
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(url);
-
-            httpGet.setHeader("X-API-Key", apiKey);
-            httpGet.setHeader("X-User-ID", String.valueOf(userId));
-
-            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                assertEquals(400, response.getCode());
-            }
-        }
-
-        url = BASE_URL + "/posts/list?id=" + userId;
+        String url = BASE_URL + "/posts/get/media?id=invalid";
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(url);
@@ -196,17 +119,19 @@ public class ListPostsIntegrationTest {
     }
 
     @Test
-    public void testListPostsUnauthorized() throws Exception {
+    public void testGetPostMediaUnauthorized() throws Exception {
         String testId = UUID.randomUUID().toString().substring(0, 8);
         String testEmail = "posts_test_" + testId + "@example.com";
         String testUsername = "test_posts_" + testId;
 
-        logger.info("Running testListPostsUnauthorized with ID: {}", testId);
+        logger.info("Running testGetPostMediaUnauthorized with ID: {}", testId);
 
         CreateUserResponse userResponse = createTestUser(testEmail, testUsername, "Posts Test " + testId);
         long userId = userResponse.getUserID();
 
-        String url = BASE_URL + "/posts/list?id=" + userId + "&limit=10&page=1";
+        insertTestPosts(userId, testId);
+
+        String url = BASE_URL + "/posts/get/media?id=" + postId;
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(url);
@@ -260,18 +185,48 @@ public class ListPostsIntegrationTest {
 
             LocalDateTime now = LocalDateTime.now();
 
-            try (PreparedStatement stmt = conn.prepareStatement(insertPostQuery)) {
-                for (int i = 0; i < 5; i++) {
-                    stmt.setLong(1, userId);
-                    stmt.setLong(2, -1);
-                    stmt.setString(3, "Test post " + (i + 1) + " for " + testId);
-                    stmt.setTimestamp(4, Timestamp.valueOf(now.minusHours(i)));
-                    stmt.setTimestamp(5, Timestamp.valueOf(now.minusHours(i)));
+            try (PreparedStatement postStmt = conn.prepareStatement(insertPostQuery)) {
+                postStmt.setLong(1, userId);
+                postStmt.setLong(2, -1);
+                postStmt.setString(3, "Test post for " + testId);
+                postStmt.setTimestamp(4, Timestamp.valueOf(now.minusHours(7)));
+                postStmt.setTimestamp(5, Timestamp.valueOf(now.minusHours(7)));
 
-                    stmt.executeUpdate();
+                postStmt.executeUpdate();
+
+                logger.info("Inserted test post for user ID: {}", userId);
+            }
+
+            String selectPostQuery = "SELECT post_id FROM posts WHERE user_id = ? LIMIT 1";
+
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectPostQuery)) {
+                selectStmt.setLong(1, userId);
+
+                try (ResultSet rs = selectStmt.executeQuery()) {
+                    while (rs.next()) {
+                        postId = rs.getLong("post_id");
+                    }
+                }
+            }
+
+            String insertMediaQuery = "INSERT INTO post_media (" +
+                    "post_id, media_url, media_type, uploaded_at) " +
+                    "VALUES (?, ?, ?, ?)";
+
+            try (PreparedStatement mediaStmt = conn.prepareStatement(insertMediaQuery)) {
+                for (int i = 0; i < 7; i++) {
+                    if (postId == 0) {
+                        throw new SQLException("Failed to get postId");
+                    }
+                    mediaStmt.setLong(1, postId);
+                    mediaStmt.setString(2, "Test media url " + (i + 1) + " for test " + testId);
+                    mediaStmt.setString(3, (i >= 3 && i % 2 != 0) ? "video" : "image");
+                    mediaStmt.setTimestamp(4, Timestamp.valueOf(now.minusHours(i)));
+
+                    mediaStmt.executeUpdate();
                 }
 
-                logger.info("Inserted 5 test posts for user ID: {}", userId);
+                logger.info("Inserted 7 media urls to post {} for test {}", postId, testId);
             }
         }
     }

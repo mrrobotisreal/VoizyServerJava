@@ -2,6 +2,7 @@ package io.winapps.voizy.repositories;
 
 import io.winapps.voizy.database.DatabaseManager;
 import io.winapps.voizy.models.posts.CreatePostRequest;
+import io.winapps.voizy.models.posts.GetPostMediaResponse;
 import io.winapps.voizy.models.posts.ListPost;
 import io.winapps.voizy.util.SqlNullUtil;
 import org.slf4j.Logger;
@@ -333,5 +334,48 @@ public class PostRepository {
                 }
             }
         }
+    }
+
+    public GetPostMediaResponse getPostMedia(long postId) throws SQLException {
+        GetPostMediaResponse response = new GetPostMediaResponse();
+
+        // Get images
+        List<String> images = new ArrayList<>();
+        String queryImages = "SELECT media_url FROM post_media WHERE post_id = ? AND media_type = 'image'";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(queryImages)) {
+
+            stmt.setLong(1, postId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String imageUrl = rs.getString("media_url");
+                    images.add(imageUrl);
+                }
+            }
+        }
+
+        // Get videos
+        List<String> videos = new ArrayList<>();
+        String queryVideos = "SELECT media_url FROM post_media WHERE post_id = ? AND media_type = 'video'";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(queryVideos)) {
+
+            stmt.setLong(1, postId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String videoUrl = rs.getString("media_url");
+                    videos.add(videoUrl);
+                }
+            }
+        }
+
+        response.setImages(images);
+        response.setVideos(videos);
+
+        return response;
     }
 }

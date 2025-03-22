@@ -1,15 +1,13 @@
 package io.winapps.voizy.services;
 
-import io.winapps.voizy.models.posts.CreatePostRequest;
-import io.winapps.voizy.models.posts.CreatePostResponse;
-import io.winapps.voizy.models.posts.ListPost;
-import io.winapps.voizy.models.posts.ListPostsResponse;
+import io.winapps.voizy.models.posts.*;
 import io.winapps.voizy.repositories.PostRepository;
 import io.winapps.voizy.util.AnalyticsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +83,19 @@ public class PostService {
             Map<String, Object> metadata = new HashMap<>();
             metadata.put("shared_post_id", postId);
             AnalyticsUtil.trackEvent(request.getUserId(), "share_post", "post", request.getOriginalPostId(), metadata);
+        }
+    }
+
+    public GetPostMediaResponse getPostMedia(long postId) throws Exception {
+        try {
+            return postRepository.getPostMedia(postId);
+        } catch (SQLException e) {
+            logger.error("Database error while getting post media", e);
+
+            GetPostMediaResponse emptyResponse = new GetPostMediaResponse();
+            emptyResponse.setImages(Collections.emptyList());
+            emptyResponse.setVideos(Collections.emptyList());
+            return emptyResponse;
         }
     }
 }

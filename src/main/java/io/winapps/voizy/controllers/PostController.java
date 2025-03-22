@@ -3,6 +3,7 @@ package io.winapps.voizy.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.winapps.voizy.models.posts.CreatePostRequest;
 import io.winapps.voizy.models.posts.CreatePostResponse;
+import io.winapps.voizy.models.posts.GetPostMediaResponse;
 import io.winapps.voizy.models.posts.ListPostsResponse;
 import io.winapps.voizy.services.PostService;
 import io.winapps.voizy.util.JsonUtil;
@@ -146,6 +147,64 @@ public class PostController {
                 } catch (IOException e) {
                     logger.error("IO error in create post servlet", e);
                     throw new RuntimeException("Error handling create post request", e);
+                }
+            }
+        };
+    }
+
+    public void getPostMedia(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (!req.getMethod().equals("GET")) {
+            res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Invalid request method");
+            return;
+        }
+
+        try {
+            String postIdString = req.getParameter("id");
+            if (postIdString == null || postIdString.isEmpty()) {
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameter 'id'");
+                return;
+            }
+
+            long postId;
+            try {
+                postId = Long.parseLong(postIdString);
+            } catch (NumberFormatException e) {
+                logger.error("Error parsing post ID", e);
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid post ID: " + e.getMessage());
+                return;
+            }
+
+            GetPostMediaResponse response = postService.getPostMedia(postId);
+
+            res.setContentType("application/json");
+            objectMapper.writeValue(res.getOutputStream(), response);
+
+        } catch (Exception e) {
+            logger.error("Error getting post media", e);
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error getting post media: " + e.getMessage());
+        }
+    }
+
+    public BiConsumer<HttpServletRequest, HttpServletResponse> getPostMediaHandler() {
+        return (req, res) -> {
+            try {
+                getPostMedia(req, res);
+            } catch (IOException e) {
+                logger.error("IO error in get post media handler", e);
+                throw new RuntimeException("Error handling get post media request", e);
+            }
+        };
+    }
+
+    public HttpServlet getPostMediaServlet() {
+        return new HttpServlet() {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+                try {
+                    getPostMedia(req, resp);
+                } catch (IOException e) {
+                    logger.error("IO error in get post media servlet", e);
+                    throw new RuntimeException("Error handling get post media request", e);
                 }
             }
         };
