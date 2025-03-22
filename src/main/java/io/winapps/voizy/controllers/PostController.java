@@ -1,6 +1,8 @@
 package io.winapps.voizy.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.winapps.voizy.models.posts.CreatePostRequest;
+import io.winapps.voizy.models.posts.CreatePostResponse;
 import io.winapps.voizy.models.posts.ListPostsResponse;
 import io.winapps.voizy.services.PostService;
 import io.winapps.voizy.util.JsonUtil;
@@ -74,6 +76,31 @@ public class PostController {
         }
     }
 
+    public void createPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (!req.getMethod().equals("POST")) {
+            res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Invalid request method");
+            return;
+        }
+
+        try {
+            CreatePostRequest request = objectMapper.readValue(req.getInputStream(), CreatePostRequest.class);
+
+            if (request.getUserId() <= 0) {
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or invalid userID");
+                return;
+            }
+
+            CreatePostResponse response = postService.createPost(request);
+
+            res.setContentType("application/json");
+            objectMapper.writeValue(res.getOutputStream(), response);
+
+        } catch (Exception e) {
+            logger.error("Error creating post", e);
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error creating post: " + e.getMessage());
+        }
+    }
+
     public BiConsumer<HttpServletRequest, HttpServletResponse> listPostsHandler() {
         return (req, res) -> {
             try {
@@ -81,6 +108,17 @@ public class PostController {
             } catch (IOException e) {
                 logger.error("IO error in list posts handler", e);
                 throw new RuntimeException("Error handling list posts request", e);
+            }
+        };
+    }
+
+    public BiConsumer<HttpServletRequest, HttpServletResponse> createPostHandler() {
+        return (req, res) -> {
+            try {
+                createPost(req, res);
+            } catch (IOException e) {
+                logger.error("IO error in create post handler", e);
+                throw new RuntimeException("Error handling create post request", e);
             }
         };
     }
@@ -99,12 +137,17 @@ public class PostController {
         };
     }
 
-//    public HttpServlet listPostsServlet() {
-//        return new HttpServlet() {
-//            @Override
-//            protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//                listPosts(req, resp);
-//            }
-//        };
-//    }
+    public HttpServlet createPostServlet() {
+        return new HttpServlet() {
+            @Override
+            protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+                try {
+                    createPost(req, resp);
+                } catch (IOException e) {
+                    logger.error("IO error in create post servlet", e);
+                    throw new RuntimeException("Error handling create post request", e);
+                }
+            }
+        };
+    }
 }
