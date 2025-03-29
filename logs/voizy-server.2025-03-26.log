@@ -1,0 +1,79 @@
+2025-03-26 19:16:50.316 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-03-26 19:16:50.435 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@783a467b
+2025-03-26 19:16:50.436 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-03-26 19:16:50.482 [main] INFO  io.winapps.voizy.database.Schema - Database tables created successfully
+2025-03-26 19:16:50.482 [main] INFO  i.w.voizy.database.DatabaseManager - MySQL connected and schema ensured
+2025-03-26 19:16:50.600 [main] INFO  org.eclipse.jetty.server.Server - jetty-11.0.13; built: 2022-12-07T20:47:15.149Z; git: a04bd1ccf844cf9bebc12129335d7493111cbff6; jvm 17.0.13+12-LTS
+2025-03-26 19:16:50.619 [main] INFO  o.e.j.s.s.DefaultSessionIdManager - Session workerName=node0
+2025-03-26 19:16:50.626 [main] INFO  o.e.j.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@4a891c97{/,null,AVAILABLE}
+2025-03-26 19:16:50.629 [main] ERROR io.winapps.voizy.VoizyServer - Server initialization error
+java.lang.IllegalStateException: /etc/letsencrypt/voizy.me/keystore.jks is not a valid keystore
+	at org.eclipse.jetty.util.security.CertificateUtils.getKeyStore(CertificateUtils.java:45)
+	at org.eclipse.jetty.util.ssl.SslContextFactory.loadKeyStore(SslContextFactory.java:1121)
+	at org.eclipse.jetty.util.ssl.SslContextFactory.load(SslContextFactory.java:291)
+	at org.eclipse.jetty.util.ssl.SslContextFactory.doStart(SslContextFactory.java:213)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:171)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:121)
+	at org.eclipse.jetty.server.SslConnectionFactory.doStart(SslConnectionFactory.java:112)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:171)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:121)
+	at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.java:367)
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:75)
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:228)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+	at org.eclipse.jetty.server.Server.doStart(Server.java:428)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+	at io.winapps.voizy.VoizyServer.main(VoizyServer.java:84)
+2025-03-26 19:19:27.910 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-03-26 19:19:28.033 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@48aca48b
+2025-03-26 19:19:28.034 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-03-26 19:19:28.072 [main] INFO  io.winapps.voizy.database.Schema - Database tables created successfully
+2025-03-26 19:19:28.073 [main] INFO  i.w.voizy.database.DatabaseManager - MySQL connected and schema ensured
+2025-03-26 19:19:28.191 [main] INFO  org.eclipse.jetty.server.Server - jetty-11.0.13; built: 2022-12-07T20:47:15.149Z; git: a04bd1ccf844cf9bebc12129335d7493111cbff6; jvm 17.0.13+12-LTS
+2025-03-26 19:19:28.212 [main] INFO  o.e.j.s.s.DefaultSessionIdManager - Session workerName=node0
+2025-03-26 19:19:28.218 [main] INFO  o.e.j.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@7fc6de5b{/,null,AVAILABLE}
+2025-03-26 19:19:28.221 [main] ERROR io.winapps.voizy.VoizyServer - Server initialization error
+java.lang.IllegalStateException: /etc/letsencrypt/voizy.me/keystore.jks is not a valid keystore
+	at org.eclipse.jetty.util.security.CertificateUtils.getKeyStore(CertificateUtils.java:45)
+	at org.eclipse.jetty.util.ssl.SslContextFactory.loadKeyStore(SslContextFactory.java:1121)
+	at org.eclipse.jetty.util.ssl.SslContextFactory.load(SslContextFactory.java:291)
+	at org.eclipse.jetty.util.ssl.SslContextFactory.doStart(SslContextFactory.java:213)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:171)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:121)
+	at org.eclipse.jetty.server.SslConnectionFactory.doStart(SslConnectionFactory.java:112)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:171)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:121)
+	at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.java:367)
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:75)
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:228)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+	at org.eclipse.jetty.server.Server.doStart(Server.java:428)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93)
+	at io.winapps.voizy.VoizyServer.main(VoizyServer.java:84)
+2025-03-26 19:19:43.349 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-03-26 19:19:43.464 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@74751b3
+2025-03-26 19:19:43.464 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-03-26 19:19:43.500 [main] INFO  io.winapps.voizy.database.Schema - Database tables created successfully
+2025-03-26 19:19:43.500 [main] INFO  i.w.voizy.database.DatabaseManager - MySQL connected and schema ensured
+2025-03-26 19:19:43.659 [main] INFO  org.eclipse.jetty.server.Server - jetty-11.0.13; built: 2022-12-07T20:47:15.149Z; git: a04bd1ccf844cf9bebc12129335d7493111cbff6; jvm 17.0.13+12-LTS
+2025-03-26 19:19:43.674 [main] INFO  o.e.j.s.s.DefaultSessionIdManager - Session workerName=node0
+2025-03-26 19:19:43.680 [main] INFO  o.e.j.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@14d14731{/,null,AVAILABLE}
+2025-03-26 19:19:43.685 [main] INFO  o.e.jetty.server.AbstractConnector - Started ServerConnector@65f8f5ae{HTTP/1.1, (http/1.1)}{0.0.0.0:8282}
+2025-03-26 19:19:43.689 [main] INFO  org.eclipse.jetty.server.Server - Started Server@7ca33c24{STARTING}[11.0.13,sto=0] @535ms
+2025-03-26 19:19:43.689 [main] INFO  io.winapps.voizy.VoizyServer - Server started on port 8282
+2025-03-26 19:19:43.689 [main] INFO  io.winapps.voizy.VoizyServer - Using HTTP
+2025-03-26 21:22:05.529 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m50s296ms).
+2025-03-26 21:29:53.461 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3m47s621ms).
+2025-03-26 21:36:30.018 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m6s192ms).
+2025-03-26 21:40:28.637 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m28s562ms).
+2025-03-26 21:57:13.487 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m44s797ms).
+2025-03-26 22:13:53.897 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m10s395ms).
+2025-03-26 22:17:25.217 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m1s270ms).
+2025-03-26 22:36:59.379 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m59s860ms).
+2025-03-26 22:41:48.235 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=48s131ms).
+2025-03-26 22:54:00.313 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=11m12s39ms).
+2025-03-26 23:24:29.987 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=7m25s591ms).

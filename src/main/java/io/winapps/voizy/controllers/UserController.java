@@ -72,12 +72,23 @@ public class UserController {
         };
     }
 
-//    public HttpServlet createUserServlet() {
-//        return new HttpServlet() {
-//            @Override
-//            protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//                create(req, resp);
-//            }
-//        };
-//    }
+    public void getProfile(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (!req.getMethod().equals("GET")) {
+            res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Invalid request method");
+            return;
+        }
+
+        try {
+//            CreateUserRequest createRequest = objectMapper.readValue(req.getInputStream(), CreateUserRequest.class);
+
+            GetUserProfileResponse response = userService.getUserProfile();
+
+            res.setContentType("application/json");
+            objectMapper.writeValue(res.getOutputStream(), response);
+
+        } catch (Exception e) {
+            logger.error("Error getting user profile", e);
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error getting the user profile: " + e.getMessage());
+        }
+    }
 }
