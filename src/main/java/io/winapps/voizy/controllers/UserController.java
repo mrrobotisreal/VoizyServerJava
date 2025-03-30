@@ -3,6 +3,7 @@ package io.winapps.voizy.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.winapps.voizy.models.users.CreateUserRequest;
 import io.winapps.voizy.models.users.CreateUserResponse;
+import io.winapps.voizy.models.users.GetUserProfileResponse;
 import io.winapps.voizy.services.UserService;
 import io.winapps.voizy.util.JsonUtil;
 import jakarta.servlet.http.HttpServlet;
@@ -79,9 +80,22 @@ public class UserController {
         }
 
         try {
-//            CreateUserRequest createRequest = objectMapper.readValue(req.getInputStream(), CreateUserRequest.class);
+            String userIdString = req.getParameter("id");
+            if (userIdString == null || userIdString.isEmpty()) {
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required param 'id'");
+                return;
+            }
 
-            GetUserProfileResponse response = userService.getUserProfile();
+            long userId;
+            try {
+                userId = Long.parseLong(userIdString);
+            } catch (NumberFormatException e) {
+                logger.error("Error parsing user ID", e);
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid user ID: " + e.getMessage());
+                return;
+            }
+
+            GetUserProfileResponse response = userService.getUserProfile(userId);
 
             res.setContentType("application/json");
             objectMapper.writeValue(res.getOutputStream(), response);
@@ -90,5 +104,30 @@ public class UserController {
             logger.error("Error getting user profile", e);
             res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error getting the user profile: " + e.getMessage());
         }
+    }
+
+    public BiConsumer<HttpServletRequest, HttpServletResponse> getProfileHandler() {
+        return (req, res) -> {
+            try {
+                getProfile(req, res);
+            } catch (IOException e) {
+                logger.error("IO error in get profile handler", e);
+                throw new RuntimeException("Error handling get profile request", e);
+            }
+        };
+    }
+
+    public HttpServlet getProfileServlet() {
+        return new HttpServlet() {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+                try {
+                    getProfile(req, resp);
+                } catch (IOException e) {
+                    logger.error("IO error in get profile servlet", e);
+                    throw new RuntimeException("Error handling get profile request", e);
+                }
+            }
+        };
     }
 }

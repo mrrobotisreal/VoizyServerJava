@@ -60,6 +60,12 @@ public class VoizyServer {
             );
             context.addServlet(new ServletHolder(protectedLoginServlet), "/users/login");
 
+            // GetProfile
+            HttpServlet protectedGetProfileServlet = ServletAdapter.biConsumerToServlet(
+                    authMiddleware.validateApiKey(userController.getProfileHandler())
+            );
+            context.addServlet(new ServletHolder(protectedGetProfileServlet), "/users/profile/get");
+
             //-------------------------//
             //       Post routes       //
             //-------------------------//

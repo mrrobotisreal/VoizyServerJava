@@ -2,8 +2,10 @@ package io.winapps.voizy.services;
 
 import io.winapps.voizy.models.auth.User;
 import io.winapps.voizy.models.middleware.APIKey;
+import io.winapps.voizy.models.posts.GetPostMediaResponse;
 import io.winapps.voizy.models.users.CreateUserRequest;
 import io.winapps.voizy.models.users.CreateUserResponse;
+import io.winapps.voizy.models.users.GetUserProfileResponse;
 import io.winapps.voizy.models.users.Profile;
 import io.winapps.voizy.repositories.ProfileRepository;
 import io.winapps.voizy.repositories.UserRepository;
@@ -14,6 +16,8 @@ import io.winapps.voizy.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,5 +86,15 @@ public class UserService {
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
         return response;
+    }
+
+    public GetUserProfileResponse getUserProfile(long userID) throws Exception {
+        try {
+            return userRepository.getProfile(userID);
+        } catch (SQLException e) {
+            logger.error("Database error while getting user profile", e);
+
+            return new GetUserProfileResponse();
+        }
     }
 }

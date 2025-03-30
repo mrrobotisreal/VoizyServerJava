@@ -28,7 +28,7 @@ public class DatabaseManager {
 
             String dbName = testMode ? "voizy_test" : "voizy";
 
-            String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/" + dbName + "?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
+            String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/" + dbName + "?useSSL=false&allowPublicKeyRetrieval=false&serverTimezone=UTC&characterEncoding=UTF-8";
 
             System.out.println("========================================================");
             System.out.println("CONNECTING TO DATABASE: " + dbName);

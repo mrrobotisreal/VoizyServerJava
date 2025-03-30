@@ -4,6 +4,8 @@ import io.winapps.voizy.database.DatabaseManager;
 import io.winapps.voizy.models.auth.User;
 import io.winapps.voizy.models.middleware.APIKey;
 import io.winapps.voizy.models.users.CreateUserRequest;
+import io.winapps.voizy.models.users.GetUserProfileResponse;
+import io.winapps.voizy.models.users.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +134,36 @@ public class UserRepository {
                     user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                     user.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
                     return user;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public GetUserProfileResponse getProfile(long userID) throws SQLException {
+        String query = "SELECT p.profile_id, p.user_id, p.first_name, p.last_name, p.preferred_name, p.birth_date, " +
+                "p.city_of_residence, p.place_of_work, p.date_joined, u.username FROM user_profiles p " +
+                "LEFT JOIN users u ON p.user_id = u.user_id WHERE p.user_id = ? LIMIT 1";
+
+        try (Connection conn = DatabaseManager.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setLong(1, userID);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    GetUserProfileResponse response = new GetUserProfileResponse();
+                    response.setUserID(rs.getLong("p.user_id"));
+                    response.setProfileID(rs.getLong("p.profile_id"));
+                    response.setFirstName(rs.getString("p.first_name"));
+                    response.setLastName(rs.getString("p.last_name"));
+                    response.setPreferredName(rs.getString("p.preferred_name"));
+                    response.setBirthDate(rs.getTimestamp("p.birth_date").toLocalDateTime().toLocalDate());
+                    response.setCityOfResidence(rs.getString("p.city_of_residence"));
+                    response.setPlaceOfWork(rs.getString("p.place_of_work"));
+                    response.setDateJoined(rs.getTimestamp("p.date_joined").toLocalDateTime());
+                    response.setUsername(rs.getString("u.username"));
+                    return response;
                 }
             }
         }
