@@ -64,7 +64,7 @@ public class PostControllerGetPostMediaTest {
 
     @Test
     public void testGetPostMedia_InvalidMethod() throws Exception {
-        when(request.getMethod()).thenReturn("POST"); // Wrong method
+        when(request.getMethod()).thenReturn("POST");
 
         postController.getPostMedia(request, response);
 
@@ -75,7 +75,7 @@ public class PostControllerGetPostMediaTest {
     @Test
     public void testGetPostMedia_MissingId() throws Exception {
         when(request.getMethod()).thenReturn("GET");
-        when(request.getParameter("id")).thenReturn(null); // Missing ID
+        when(request.getParameter("id")).thenReturn(null);
 
         postController.getPostMedia(request, response);
 
@@ -86,7 +86,7 @@ public class PostControllerGetPostMediaTest {
     @Test
     public void testGetPostMedia_InvalidId() throws Exception {
         when(request.getMethod()).thenReturn("GET");
-        when(request.getParameter("id")).thenReturn("not-a-number"); // Invalid ID
+        when(request.getParameter("id")).thenReturn("not-a-number");
 
         postController.getPostMedia(request, response);
 
